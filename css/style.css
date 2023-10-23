@@ -1,0 +1,24 @@
+:root {
+  --main: #ab25be;
+}
+
+.morado {
+  background-color: var(--main) !important;
+}
+
+.tamanio {
+  /* width: 90%; */
+  height: 400px;
+}
+
+.tamanio_ancho {
+  width: 600px;
+}
+
+.background {
+  background-image: url("../img/background.jpg");
+}
+
+.background_izq {
+  background-image: url("../img/background_izq.jpg");
+}
