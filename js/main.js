@@ -304,9 +304,9 @@ function buscar_libro() {
 			$("#tbody-libros").html(response);
 			if (response == "0") {
 				await Swal.fire(
-				  'Buscar libros',
-				  'No se han encontrado coincidencias',
-				  'info'
+					'Buscar libros',
+					'No se han encontrado coincidencias',
+					'info'
 				);
 			}
 		},
@@ -325,7 +325,7 @@ function prestar_libro() {
 	var libro_prestar = $("#libro_prestar").val();
 	var curp_usuario = localStorage.getItem("CurpUsuario");
 	var fecha_prestamo = $("#fecha_prestamo").val();
-	var numero_libro_prestar = $("#numero_libro_prestar").val();
+	var numero_libro_prestar = $("#libro_prestar").attr("numero");
 
 	$.ajax({
 		type: "POST",
@@ -374,21 +374,6 @@ function prestar_libro() {
 	});
 }
 
-function numero_libro(id_libro = 0) {
-	$.ajax({
-		type: "POST",
-		url: "functions_class.php",
-		data: {
-			accion: "numero_libro",
-			id_libro: id_libro
-		},
-		dataType: "html",
-		success: function (response) {
-			$("#numero_libro_prestar").val(parseInt(response) + 1);
-		}
-	});
-}
-
 function buscar_lector(id_usuario = 0) {
 	$.ajax({
 		type: "POST",
@@ -416,6 +401,10 @@ function buscar_lector(id_usuario = 0) {
 }
 
 function buscar_prestamo(id_prestamo = 0) {
+	var libro = $("#libro_devolver").find(":selected");
+	var id_libro = ($(libro).attr("id_libro"));
+	$("#libro_devolver").attr("id_libro", id_libro);
+
 	$.ajax({
 		type: "POST",
 		url: "functions_class.php",
@@ -443,6 +432,7 @@ function devolver_libro() {
 	var usuario_devolver = $("#usuario_devolver").val();
 	var libro_devolver = $("#libro_devolver").val();
 	var fecha_devolucion = $("#fecha_devolucion").val();
+	var id_libro = $("#libro_devolver").attr("id_libro");
 
 	if (libro_devolver == "") {
 		Swal.fire(
@@ -460,6 +450,15 @@ function devolver_libro() {
 		);
 		return;
 	}
+	
+	if (id_libro == "0") {
+		Swal.fire(
+			'Devolución de libro',
+			'El libro no se ha identificado',
+			'warning'
+		);
+		return;
+	}
 
 	$.ajax({
 		type: "POST",
@@ -468,7 +467,8 @@ function devolver_libro() {
 			accion: "devolver_libro",
 			usuario_devolver: usuario_devolver,
 			libro_devolver: libro_devolver,
-			fecha_devolucion: fecha_devolucion
+			fecha_devolucion: fecha_devolucion,
+			id_libro: id_libro
 		},
 		dataType: "html",
 		success: async function (response) {

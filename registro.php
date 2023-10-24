@@ -84,8 +84,8 @@ $pdo->exec("SET NAMES UTF8");
                       <textarea class="form-control" name="descripcion_registro" id="descripcion_registro" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="cantidad_registro" class="form-label">Cantidad de Libros</label>
-                        <input type="number" min="1" class="form-control" id="cantidad_registro" required value="1">
+                        <label for="cantidad_registro" class="form-label">Número clave de libro</label>
+                        <input type="text" class="form-control" id="cantidad_registro" required>
                     </div>
                     <div class="d-grid gap-2 col-6 mx-auto">
                         <button type="button" onclick="registrar_libro()" class="btn btn-primary">REGISTRAR</button>

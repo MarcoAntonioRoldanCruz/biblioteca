@@ -84,24 +84,14 @@ $fecha = $n_anio . "-" . $n_mes_2 . "-" . $n_dia_2; // Fecha corta; ej: 04-10-20
                                 <form>
                                     <div class="mb-3">
                                         <label for="libro_prestar" class="form-label">Libro</label>
-                                        <select class="form-select" name="libro_prestar" id="libro_prestar" onchange="numero_libro(this.value)">
+                                        <select class="form-select" name="libro_prestar" id="libro_prestar">
                                             <option selected>Selecciona un libro</option>
                                             <?php
-                                            $sql = "SELECT * FROM libros";
+                                            $sql = "SELECT * FROM libros WHERE EsPrestado = 'NO'";
                                             $libros_st = $pdo->prepare($sql);
                                             $libros_st->execute();
                                             while ($libro = $libros_st->fetch()) {
-                                                $id_libro = $libro['IdLibro'];
-                                                $ejemplares = $libro['Ejemplares'];
-                                                $sql = "SELECT * FROM prestamolibros WHERE IdLibro = '{$id_libro}' AND FechaFin IS NULL";
-                                                $prestamos_st = $pdo->prepare($sql);
-                                                $prestamos_st->execute();
-                                                $prestamos_conteo = $prestamos_st->rowCount();
-                                                if ($ejemplares == $prestamos_conteo) {
-                                                    echo "<option value='{$libro['IdLibro']}' disabled  title='Libro prestado: {$prestamos_conteo} veces, cantidad ejemplares: {$ejemplares}'>{$libro['Titulo']} - No disponible</option>";
-                                                } else {
-                                                    echo "<option value='{$libro['IdLibro']}'  title='Libro prestado: {$prestamos_conteo} veces, cantidad ejemplares: {$ejemplares}'>{$libro['Titulo']}</option>";
-                                                }
+                                                echo "<option numero='{$libro['Numero']}' value='{$libro['IdLibro']}' >{$libro['Titulo']} - No. {$libro['Numero']}</option>";
                                             }
                                             ?>
                                         </select>
@@ -111,11 +101,13 @@ $fecha = $n_anio . "-" . $n_mes_2 . "-" . $n_dia_2; // Fecha corta; ej: 04-10-20
                                         <input type="date" class="form-control border-info" name="fecha_prestamo" id="fecha_prestamo" aria-describedby="fecha_prestamo_helpId" value="<?= $fecha ?>">
                                         <small id="fecha_prestamo_helpId" class="form-text text-muted">Fecha cuando el libro <strong>sale</strong> de biblioteca</small>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="numero_libro_prestar" class="form-label">Número de libro</label>
-                                        <input type="number" class="form-control" name="numero_libro_prestar" id="numero_libro_prestar" aria-describedby="helpId" placeholder="Número de libros prestados">
-                                        <small id="helpId" class="form-text text-muted">Es la cantidad de libros prestados</small>
-                                    </div>
+                                    <!-- <div class="mb-3">
+                                        <label for="numero_libro_prestar" class="form-label">Número clave de libro</label>
+                                        <select class="form-control form-select" name="numero_libro_prestar" id="numero_libro_prestar">
+                                            <option value="">Selecciona la clave de un libro</option>
+                                        </select>
+                                        <small id="helpId" class="form-text text-muted">Es la clave del libros prestado</small>
+                                    </div> -->
                                     <div class="d-grid gap-2 col-6 mx-auto">
                                         <button type="button" class="btn btn-warning" onclick="prestar_libro()">PRESTAR</button>
                                     </div>
@@ -150,7 +142,7 @@ $fecha = $n_anio . "-" . $n_mes_2 . "-" . $n_dia_2; // Fecha corta; ej: 04-10-20
                                     </div>
                                     <div class="mb-3">
                                         <label for="libro_devolver" class="form-label">Libro</label>
-                                        <select class="form-select " name="prestar_libro()" id="libro_devolver" onchange="buscar_prestamo(this.value)">
+                                        <select class="form-select " name="libro_devolver" id="libro_devolver" onchange="buscar_prestamo(this.value)">
                                             <option selected>Selecciona el libro</option>
                                             <?php
                                             $sql = "SELECT * FROM prestamolibros WHERE FechaFin IS NULL";
@@ -162,13 +154,13 @@ $fecha = $n_anio . "-" . $n_mes_2 . "-" . $n_dia_2; // Fecha corta; ej: 04-10-20
                                                 $libros_st = $pdo->prepare($sql);
                                                 $libros_st->execute();
                                                 $libro = $libros_st->fetch();
-                                                
+
                                                 $sql = "SELECT * FROM usuarios WHERE IdUsuario = {$prestamo['IdUsuario']} LIMIT 1";
                                                 $usuario_st = $pdo->prepare($sql);
                                                 $usuario_st->execute();
                                                 $usuario = $usuario_st->fetch();
-                                                
-                                                echo "<option value='{$prestamo['IdPrestamo']}' title='{$usuario['CurpUsuario']}'>{$libro['Titulo']} - No. {$prestamo['NumeroLibro']}</option>";
+
+                                                echo "<option value='{$prestamo['IdPrestamo']}' title='{$usuario['CurpUsuario']}' id_libro='{$libro['IdLibro']}'>{$libro['Titulo']} - No. {$libro['Numero']}</option>";
                                             }
                                             ?>
                                         </select>

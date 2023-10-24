@@ -95,35 +95,20 @@ switch ($accion) {
         $usuario_st->execute();
         $usuario = $usuario_st->fetch();
 
-        $sql = "SELECT * FROM prestamolibros WHERE IdLibro = '{$libro_prestar}' AND NumeroLibro = '{$numero_libro_prestar}' AND FechaFin IS NULL";
+        $sql = "INSERT INTO prestamolibros(IdLibro, IdUsuario, NumeroLibro, FechaInicio, FechaFin) VALUES ('{$libro_prestar}', '{$usuario['IdUsuario']}', '{$numero_libro_prestar}', '{$fecha_prestamo}', NULL)";
         $prestamos_st = $pdo->prepare($sql);
-        $prestamos_st->execute();
-        $prestamos_conteo = $prestamos_st->rowCount();
+        if ($prestamos_st->execute()) {
 
-        $sql = "SELECT * FROM libros WHERE IdLibro = '{$libro_prestar}' LIMIT 1";
-        $libro_st = $pdo->prepare($sql);
-        $libro_st->execute();
-        $libro = $libro_st->fetch();
-
-        if ($prestamos_conteo >= $libro['Ejemplares']) {
-            echo "Prestado";
-        } else {
-            $sql = "INSERT INTO prestamolibros(IdLibro, IdUsuario, NumeroLibro, FechaInicio, FechaFin) VALUES ('{$libro_prestar}', '{$usuario['IdUsuario']}', '{$numero_libro_prestar}', '{$fecha_prestamo}', NULL)";
-            $prestamos_st = $pdo->prepare($sql);
-            if ($prestamos_st->execute()) {
+            $sql = "UPDATE libros SET EsPrestado = 'SI' WHERE IdLibro = '{$libro_prestar}'";
+            $libros_st = $pdo->prepare($sql);
+            if ($libros_st->execute()) {
                 echo "OK";
             } else {
                 echo "No";
             }
+        } else {
+            echo "No";
         }
-        break;
-    case 'numero_libro':
-        $id_libro = ($_POST['id_libro']) ? $_POST['id_libro'] : "";
-        $sql = "SELECT * FROM prestamolibros WHERE IdLibro = '{$id_libro}' AND FechaFin IS NULL";
-        $prestamos_st = $pdo->prepare($sql);
-        $prestamos_st->execute();
-        $prestamos_conteo = $prestamos_st->rowCount();
-        echo $prestamos_conteo;
         break;
     case 'buscar_lector':
         $id_usuario = (isset($_POST['id_usuario'])) ? $_POST['id_usuario'] : "";
@@ -143,7 +128,7 @@ switch ($accion) {
             $usuario_st->execute();
             $usuario = $usuario_st->fetch();
 
-            $html .= "<option value='{$prestamo['IdPrestamo']}' title='{$usuario['CurpUsuario']}'>{$libro['Titulo']} - No. {$prestamo['NumeroLibro']}</option>";
+            $html .= "<option value='{$prestamo['IdPrestamo']}' title='{$usuario['CurpUsuario']}' id_libro='{$libro['IdLibro']}'>{$libro['Titulo']} - No. {$libro['Numero']}</option>";
         }
         echo $html;
         break;
@@ -161,10 +146,17 @@ switch ($accion) {
         $usuario_devolver = (isset($_POST['usuario_devolver'])) ? $_POST['usuario_devolver'] : "";
         $libro_devolver = (isset($_POST['libro_devolver'])) ? $_POST['libro_devolver'] : "";
         $fecha_devolucion = (isset($_POST['fecha_devolucion'])) ? $_POST['fecha_devolucion'] : $fecha;
+        $id_libro = (isset($_POST['id_libro'])) ? $_POST['id_libro'] : "";
         $sql = "UPDATE prestamolibros SET FechaFin = '{$fecha_devolucion}' WHERE IdUsuario = '{$usuario_devolver}' AND IdPrestamo = '{$libro_devolver}'";
         $prestamos_st = $pdo->prepare($sql);
         if ($prestamos_st->execute()) {
-            echo "OK";
+            $sql = "UPDATE libros SET EsPrestado = 'NO' WHERE IdLibro = '{$id_libro}'";
+            $libro = $pdo->prepare($sql);
+            if ($libro->execute()) {
+                echo "OK";
+            } else {
+                echo "No";
+            }
         } else {
             echo "No";
         }
