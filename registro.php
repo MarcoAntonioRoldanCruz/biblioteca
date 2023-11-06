@@ -1,9 +1,9 @@
 <?php
 include_once "conexion.php";
-$pdo->exec("SET NAMES UTF8");
+session_start();
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html id="theme" lang="es" data-bs-theme="light">
 
 <head>
     <title>Registro de libros</title>
@@ -12,6 +12,7 @@ $pdo->exec("SET NAMES UTF8");
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <script src="js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="icons/bootstrap-icons.css">
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
     <script src="js/jquery-ui.min.js"></script>
@@ -19,11 +20,14 @@ $pdo->exec("SET NAMES UTF8");
     <link rel="shortcut icon" href="biblioteca.ico" type="image/x-icon">
 </head>
 
-<body class="background">
+<body id="bg" class="background">
 
     <div class="p-5 mb-4 text-bg-info text-center text-white bg-dark">
         <h1>Registro de libros</h1>
+        <i class="bi bi-moon-stars-fill float-end" onclick="dark_mode()"></i>
 
+        <input type="hidden" class="form-control" name="curp" id="curp">
+        <input type="hidden" class="form-control" name="gradoG" id="gradoG">
     </div>
 
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
@@ -32,18 +36,27 @@ $pdo->exec("SET NAMES UTF8");
                 <li class="nav-item">
                     <a class="nav-link" href="dashboard.php">Inicio</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="registro.php">Registro de libros</a>
-                </li>
+                <?php if ($_SESSION['GradoGrupo'] == "Administrador") {    ?>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="registro.php">Registro de libros</a>
+                    </li>
+                <?php } ?>
                 <li class="nav-item">
                     <a class="nav-link" href="busqueda.php">Buscar libros</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="prestamo.php">Préstamo de libros</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="historial.php">Historial</a>
-                </li>
+                <?php if ($_SESSION['GradoGrupo'] == "Administrador") {    ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="historial.php">Historial</a>
+                    </li>
+                <?php } ?>
+                <?php if ($_SESSION['GradoGrupo'] == "Administrador") {    ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.php">Usuarios</a>
+                    </li>
+                <?php } ?>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">Cerrar sesión</a>
                 </li>
@@ -80,8 +93,8 @@ $pdo->exec("SET NAMES UTF8");
                         </select>
                     </div>
                     <div class="mb-3">
-                      <label for="descripcion_registro" class="form-label">Descripción del libro</label>
-                      <textarea class="form-control" name="descripcion_registro" id="descripcion_registro" rows="3" required></textarea>
+                        <label for="descripcion_registro" class="form-label">Descripción del libro</label>
+                        <textarea class="form-control" name="descripcion_registro" id="descripcion_registro" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="cantidad_registro" class="form-label">Número clave de libro</label>

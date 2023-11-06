@@ -1,16 +1,18 @@
 <?php
 include_once "conexion.php";
+session_start();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html id="theme" lang="en">
 
 <head>
-	<title>Prestamo de libros</title>
+	<title>Historial</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<script src="js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="icons/bootstrap-icons.css">
 	<script src="js/sweetalert2.all.min.js"></script>
 	<script src="js/jquery-3.6.0.min.js"></script>
 	<script src="js/jquery-ui.min.js"></script>
@@ -18,10 +20,14 @@ include_once "conexion.php";
 	<link rel="shortcut icon" href="biblioteca.ico" type="image/x-icon">
 </head>
 
-<body class="background">
+<body id="bg" class="background">
 
 	<div class="p-5 mb-4 text-bg-info text-center text-white bg-dark">
-		<h1>Préstamo de Libros</h1>
+		<h1>Historial</h1>
+		<i class="bi bi-moon-stars-fill float-end" onclick="dark_mode()"></i>
+
+		<input type="hidden" class="form-control" name="curp" id="curp">
+		<input type="hidden" class="form-control" name="gradoG" id="gradoG">
 	</div>
 
 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
@@ -30,9 +36,11 @@ include_once "conexion.php";
 				<li class="nav-item">
 					<a class="nav-link" href="dashboard.php">Inicio</a>
 				</li>
+				<?php if ($_SESSION['GradoGrupo'] == "Administrador") {	?>
 				<li class="nav-item">
 					<a class="nav-link" href="registro.php">Registro de libros</a>
 				</li>
+				<?php } ?>
 				<li class="nav-item">
 					<a class="nav-link" href="busqueda.php">Buscar libros</a>
 				</li>
@@ -41,6 +49,9 @@ include_once "conexion.php";
 				</li>
 				<li class="nav-item">
 					<a class="nav-link active" href="historial.php">Historial</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="usuarios.php">Usuarios</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="index.php">Cerrar sesión</a>
@@ -76,7 +87,7 @@ include_once "conexion.php";
 				</thead>
 				<tbody id="tbody-historial" class="table-group-divider">
 					<?php
-					$sql = "SELECT * FROM prestamolibros ORDER BY IdPrestamo DESC LIMIT 250";
+					$sql = "SELECT * FROM prestamolibros ORDER BY IdPrestamo ASC LIMIT 250";
 					$prestamos_st = $pdo->prepare($sql);
 					$prestamos_st->execute();
 					while ($prestamo = $prestamos_st->fetch()) {

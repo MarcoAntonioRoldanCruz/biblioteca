@@ -1,10 +1,13 @@
 <?php
 include_once "conexion.php"; // Es igual que traer todo el contenido del archivo en esta línea.
 // Códigos y funcionalidad. En estos fragmentos. (PHP).
+if (session_status() == 2) {
+    session_destroy();
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html id="theme" lang="es">
 
 <head>
     <title>Sistema de Biblioteca</title>
@@ -22,13 +25,20 @@ include_once "conexion.php"; // Es igual que traer todo el contenido del archivo
     <link rel="shortcut icon" href="biblioteca.ico" type="image/x-icon">
     <!-- main.js son codigos y funcionalidad JavaScript-->
     <!-- Es importante considerar que se pueden crear más archivos js a conveniencia del programador y necesidades del sistema -->
+    <script>
+        localStorage.setItem("CurpUsuario", "");
+        localStorage.setItem("GradoGrupo", "");
+    </script>
 </head>
 
-<body class="background">
+<html id="theme" lang="es" data-bs-theme="light">
 
-    <div class="p-5 mb-4 text-center text-white bg-dark">
-        <h1>Iniciar sesión</h1>
-    </div>
+<div class="p-5 mb-4 text-center text-white bg-dark">
+    <h1>Iniciar sesión</h1>
+    <i class="bi bi-moon-stars-fill float-end" onclick="dark_mode()"></i>
+</div>
+
+<body id="bg" class="background">
 
     <div class="container">
         <div class="row">
@@ -44,7 +54,6 @@ include_once "conexion.php"; // Es igual que traer todo el contenido del archivo
                     <div class="mb-3 mt-4"><!--margen debajo 3, margen superior 2-->
                         <label for="sesion_curp" class="form-label">Curp</label>
                         <input id="sesion_curp" type="text" class="form-control" required>
-
                     </div>
                     <!-- <div class="mb-2">
                         <label for="sesion_contrasenia" class="form-label">Contraseña</label>
@@ -64,9 +73,9 @@ include_once "conexion.php"; // Es igual que traer todo el contenido del archivo
                         <input type="button" class="btn btn-primary" onclick="iniciar_sesion()" value="INICIAR SESION">
                     </div>
                 </form>
-                <div class="d-grid gap-2 col-6 mx-auto bg-light mt-2" data-bs-toggle="modal" data-bs-target="#myModal">
+                <!-- <div class="d-grid gap-2 col-6 mx-auto bg-light mt-2" data-bs-toggle="modal" data-bs-target="#myModal">
                     <button class="btn btn-link">REGISTRARME</button>
-                </div>
+                </div> -->
 
             </div>
         </div>

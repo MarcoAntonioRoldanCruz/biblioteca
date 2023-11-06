@@ -1,7 +1,27 @@
 $(function () {
 	// Habilitar tooltips
-	const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-	const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+	const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+	const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+	var u = localStorage.getItem("CurpUsuario");
+	var t = localStorage.getItem("GradoGrupo");
+	var theme = localStorage.getItem("theme");
+	$("#curp").val(u);
+	$("#gradoG").val(t);
+	if (theme == "dark") {
+		$("#theme").attr("data-bs-theme", "dark");
+		$("#bg").removeClass("background");
+		$("#bg").addClass("background_dark");
+
+	} else {
+		$("#theme").attr("data-bs-theme", "light");
+		$("#bg").removeClass("background_dark");
+		$("#bg").addClass("background");
+	}
+	console.clear();
+	// console.log(u);
+	// console.log(t);
+	// console.log(theme);
+	
 });
 
 function iniciar_sesion() {
@@ -41,7 +61,8 @@ function iniciar_sesion() {
 		dataType: "html",
 		success: function (response) {
 			console.log(response);
-			if (response == "ok") {
+			localStorage.setItem("GradoGrupo", response);
+			if (response != "no") {
 				Swal.fire(
 					'Iniciando sesion',
 					'Bienvenido (a) a la biblioteca Altamirano',
@@ -450,7 +471,7 @@ function devolver_libro() {
 		);
 		return;
 	}
-	
+
 	if (id_libro == "0") {
 		Swal.fire(
 			'Devolución de libro',
@@ -551,4 +572,26 @@ function ver_contrasenia() {
 		$("#ver_contrasenia_icon").removeClass("bi-eye");
 		$("#ver_contrasenia_icon").addClass("bi-eye-slash");
 	}
+}
+
+function dark_mode() {
+	var theme = $("#theme").attr("data-bs-theme");
+	if (theme == "dark") {
+		localStorage.setItem("theme", "light");
+		$("#theme").attr("data-bs-theme", "light");
+		// $("#bg").removeClass("background_dark");
+		// $("#bg").addClass("background");
+	} else {
+		localStorage.setItem("theme", "dark");
+		$("#theme").attr("data-bs-theme", "dark");
+		// $("#bg").removeClass("background");
+		// $("#bg").addClass("background_dark");
+	}
+	$("#bg").animate({ opacity: 0.4 }, 500, function () {
+		// La animación ha finalizado
+		$("#bg").toggleClass("background background_dark");
+		$("#bg").animate({ opacity: 1 }, 500);
+	});
+
+
 }

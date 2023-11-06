@@ -19,14 +19,20 @@ switch ($accion) {
         $usuario_st->execute();
         $usuario = $usuario_st->fetch();
         if (!empty($usuario)) {
-            echo "ok";
+            if (session_status() == 2) {
+                session_destroy();
+            }
+            session_start();
+            $_SESSION['curp'] = $curp;
+            $_SESSION['GradoGrupo'] = $usuario['GradoGrupo'];
+            echo $usuario['GradoGrupo'];
         } else {
             echo "no";
         }
         break;
     case 'registrar_usuario':
-        $curp_registro = (isset($_POST['curp_registro'])) ? $_POS['curp_registro'] : "";
-        $grado_grupo_registro = (isset($_POS['grado_grupo_registro'])) ? $_POST['grado_grupo_registro'] : "";
+        $curp_registro = (isset($_POST['curp_registro'])) ? $_POST['curp_registro'] : "";
+        $grado_grupo_registro = (isset($_POST['grado_grupo_registro'])) ? $_POST['grado_grupo_registro'] : "";
         $usuario_registro = (isset($_POST['usuario_registro'])) ? $_POST['usuario_registro'] : "";
         $sql = "INSERT INTO usuarios(CurpUsuario, NombreUsuario, GradoGrupo) VALUES('{$curp_registro}', '{$usuario_registro}','{$grado_grupo_registro}')";
         $usuario_st = $pdo->prepare($sql);
@@ -164,7 +170,7 @@ switch ($accion) {
     case 'consultar_historial':
         $desde = (isset($_POST['desde'])) ? $_POST['desde'] : "";
         $hasta = (isset($_POST['hasta'])) ? $_POST['hasta'] : "";
-        $sql = "SELECT * FROM prestamolibros WHERE FechaInicio BETWEEN '{$desde}' AND '{$hasta}' ORDER BY IdPrestamo DESC";
+        $sql = "SELECT * FROM prestamolibros WHERE FechaInicio BETWEEN '{$desde}' AND '{$hasta}' ORDER BY IdPrestamo ASC";
         $historial_st = $pdo->prepare($sql);
         $historial_st->execute();
         $html = "";
@@ -201,6 +207,8 @@ switch ($accion) {
             </tr>";
         }
         echo $html;
+        break;
+    case "usuarios":
         break;
     default:
         echo "ACCION NO ENCONTRADA";

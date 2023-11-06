@@ -1,17 +1,19 @@
 <?php
 include_once "conexion.php";
 $id_categoria = (isset($_GET['categoria'])) ? $_GET['categoria'] : "";
+session_start();
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html id="theme" lang="es" data-bs-theme="light">
 
 <head>
-  <title>Registro de libros</title>
+  <title>Búsqueda</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <script src="js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="icons/bootstrap-icons.css">
   <script src="js/sweetalert2.all.min.js"></script>
   <script src="js/jquery-3.6.0.min.js"></script>
   <script src="js/jquery-ui.min.js"></script>
@@ -19,9 +21,13 @@ $id_categoria = (isset($_GET['categoria'])) ? $_GET['categoria'] : "";
   <link rel="shortcut icon" href="biblioteca.ico" type="image/x-icon">
 </head>
 
-<body class="background">
+<body id="bg" class="background">
   <div class="w-100 p-5 mb-4 text-bg-info text-center text-white bg-dark">
     <h1>Búsqueda y filtrado de libros</h1>
+    <i class="bi bi-moon-stars-fill float-end" onclick="dark_mode()"></i>
+
+    <input type="hidden" class="form-control" name="curp" id="curp">
+    <input type="hidden" class="form-control" name="gradoG" id="gradoG">
   </div>
 
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
@@ -30,23 +36,32 @@ $id_categoria = (isset($_GET['categoria'])) ? $_GET['categoria'] : "";
         <li class="nav-item">
           <a class="nav-link" href="dashboard.php">Inicio</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="registro.php">Registro de libros</a>
-        </li>
+        <?php if ($_SESSION['GradoGrupo'] == "Administrador") {  ?>
+          <li class="nav-item">
+            <a class="nav-link" href="registro.php">Registro de libros</a>
+          </li>
+        <?php } ?>
         <li class="nav-item">
           <a class="nav-link active" href="busqueda.php">Buscar libros</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="prestamo.php">Préstamo de libros</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="historial.php">Historial</a>
-        </li>
+        <?php if ($_SESSION['GradoGrupo'] == "Administrador") {  ?>
+          <li class="nav-item">
+            <a class="nav-link" href="historial.php">Historial</a>
+          </li>
+        <?php } ?>
+        <?php if ($_SESSION['GradoGrupo'] == "Administrador") {  ?>
+          <li class="nav-item">
+            <a class="nav-link" href="usuarios.php">Usuarios</a>
+          </li>
+        <?php } ?>
         <li class="nav-item">
           <a class="nav-link" href="index.php">Cerrar sesión</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Filtros</a>
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Categoría</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="busqueda.php?categoria=0">Todos</a></li>
             <?php
@@ -110,7 +125,7 @@ $id_categoria = (isset($_GET['categoria'])) ? $_GET['categoria'] : "";
       </div>
       <div class="col">
         <div class="table-responsive-sm">
-          <table class="table table-striped-columns table-hover	table-bordered table-warning align-middle">
+          <table class="table table-striped-columns table-hover	table-bordered table-info align-middle">
             <thead class="table-light">
               <caption>Coincidencias encontradas</caption>
               <tr>
@@ -129,7 +144,7 @@ $id_categoria = (isset($_GET['categoria'])) ? $_GET['categoria'] : "";
               $libro_st->execute();
               while ($libro = $libro_st->fetch()) {
               ?>
-                <tr class="table-warning" title='<?= $libro['Descripcion'] ?>' data-bs-toggle="tooltip">
+                <tr class="table-info" title='<?= $libro['Descripcion'] ?>' data-bs-toggle="tooltip">
                   <td scope="row"><?= $libro['Titulo'] ?></td>
                   <td>
                     <?php
@@ -150,14 +165,9 @@ $id_categoria = (isset($_GET['categoria'])) ? $_GET['categoria'] : "";
             </tfoot>
           </table>
         </div>
-
       </div>
     </div>
   </div>
-
-
-
-
 
 </body>
 
