@@ -54,27 +54,27 @@ $fecha = $n_anio . "-" . $n_mes_2 . "-" . $n_dia_2; // Fecha corta; ej: 04-10-20
                 <li class="nav-item">
                     <a class="nav-link" href="dashboard.php">Inicio</a>
                 </li>
-                <?php if ($_SESSION['GradoGrupo'] == "Administrador") {	?>
-				<li class="nav-item">
-					<a class="nav-link" href="registro.php">Registro de libros</a>
-				</li>
-				<?php } ?>
+                <?php if ($_SESSION['GradoGrupo'] == "Administrador") {    ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registro.php">Registro de libros</a>
+                    </li>
+                <?php } ?>
                 <li class="nav-item">
                     <a class="nav-link" href="busqueda.php">Buscar libros</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="prestamo.php">Préstamo de libros</a>
                 </li>
-                <?php if ($_SESSION['GradoGrupo'] == "Administrador") {	?>
-				<li class="nav-item">
-					<a class="nav-link" href="historial.php">Historial</a>
-				</li>
-				<?php } ?>
-				<?php if ($_SESSION['GradoGrupo'] == "Administrador") {	?>
-				<li class="nav-item">
-					<a class="nav-link" href="usuarios.php">Usuarios</a>
-				</li>
-				<?php } ?>
+                <?php if ($_SESSION['GradoGrupo'] == "Administrador") {    ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="historial.php">Historial</a>
+                    </li>
+                <?php } ?>
+                <?php if ($_SESSION['GradoGrupo'] == "Administrador") {    ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.php">Usuarios</a>
+                    </li>
+                <?php } ?>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">Cerrar sesión</a>
                 </li>
@@ -106,6 +106,22 @@ $fecha = $n_anio . "-" . $n_mes_2 . "-" . $n_dia_2; // Fecha corta; ej: 04-10-20
                                             $libros_st->execute();
                                             while ($libro = $libros_st->fetch()) {
                                                 echo "<option numero='{$libro['Numero']}' value='{$libro['IdLibro']}' >{$libro['Titulo']} - No. {$libro['Numero']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="usuario_prestar" class="form-label">Lector</label>
+                                        <select class="form-select" name="usuario_prestar" id="usuario_prestar">
+                                            <option selected>Selecciona al lector</option>
+                                            <?php
+                                            $sql = "SELECT * FROM usuarios";
+                                            $usuario_st = $pdo->prepare($sql);
+                                            $usuario_st->execute();
+                                            while ($usuario = $usuario_st->fetch()) {
+                                            ?>
+                                                <option value="<?= $usuario['CurpUsuario'] ?>" title="<?= $usuario['CurpUsuario'] ?>"><?= $usuario['NombreUsuario'] ?></option>
+                                            <?php
                                             }
                                             ?>
                                         </select>

@@ -116,12 +116,46 @@ switch ($accion) {
             echo "No";
         }
         break;
+    case 'editar_usuario':
+        $id_usuario = (isset($_POST['id_usuario'])) ? $_POST['id_usuario'] : "";
+        $sql = "SELECT * FROM usuarios WHERE IdUsuario = {$id_usuario} LIMIT 1";
+        $usuario_st = $pdo->prepare($sql);
+        $usuario_st->execute();
+        // Regresa un registro de un usuario en forma de Arreglo JSON es decir: usuario: {NombreUsuario: "Fatima"}
+        echo json_encode(array("Status" => "OK", "usuario" => $usuario_st->fetch(MYSQLI_ASSOC)));
+        break;
+    case 'modificar_usuario':
+        $id_usuario = (isset($_POST['id_usuario'])) ? $_POST['id_usuario'] : "";
+        $curp_registro = (isset($_POST['curp_registro'])) ? $_POST['curp_registro'] : "";
+        $grado_grupo_registro = (isset($_POST['grado_grupo_registro'])) ? $_POST['grado_grupo_registro'] : "";
+        $usuario_registro = (isset($_POST['usuario_registro'])) ? $_POST['usuario_registro'] : "";
+        $sql = "UPDATE usuarios SET CurpUsuario = '{$curp_registro}', NombreUsuario = '{$usuario_registro}', GradoGrupo = '{$grado_grupo_registro}' WHERE IdUsuario = '{$id_usuario}'";
+        $usuario_st = $pdo->prepare($sql);
+        // Si puede realizar la inserción de un registro regresa unresultado favorable "OK"
+        if ($usuario_st->execute()) {
+            echo "OK";
+        } else {
+            echo $usuario_st->errorInfo()[2]; // Sino regresar el error (Elcual el programador debe colocar en un html en blancopara poder visualizarlo correctamente);
+        }
+        break;
+    case 'eliminar_usuario':
+        $id_usuario = (isset($_POST['id_usuario'])) ? $_POST['id_usuario'] : "";
+        $sql = "DELETE FROM usuario WHERE IdUsuario = '{$id_usuario}'";
+        // echo $sql;
+        $usuario_st = $pdo->prepare($sql);
+        if ($usuario_st->execute()) {
+            echo "OK";
+        } else {
+            echo $pdo->errorInfo()[2];
+        }
+        break;
     case 'buscar_lector':
         $id_usuario = (isset($_POST['id_usuario'])) ? $_POST['id_usuario'] : "";
-        $sql = "SELECT * FROM prestamolibros WHERE IdUsuario = '{$id_usuario}' AND FechaFin IS NULL";
+        $sql = "SELECT * FROM prestamolibros WHERE IdUsuario = '{$id_usuario}' AND FechaFin = '' OR (FechaFin IS NULL)";
         $prestamos_st = $pdo->prepare($sql);
         $prestamos_st->execute();
         $prestamos_conteo = $prestamos_st->rowCount();
+        // echo $sql;
         $html = "<option value='' selected>Selecciona el libro</option>";
         while ($prestamo = $prestamos_st->fetch()) {
             $sql = "SELECT * FROM libros WHERE IdLibro = '{$prestamo['IdLibro']}' LIMIT 1";

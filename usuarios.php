@@ -79,7 +79,7 @@ if ($total_usuarios > 0) {
 	<div class="container-fluid mt-5">
 		<div class="row">
 			<div class="col">
-				<form>
+				<!-- <form>
 					<div class="mb-3">
 						<label for="nombre_usuario" class="form-label">Nombre de usuario</label>
 						<input type="text" name="nombre_usuario" id="nombre_usuario" class="form-control" placeholder="Nombre de usuario">
@@ -88,15 +88,57 @@ if ($total_usuarios > 0) {
 						<label for="curp_usuario" class="form-label">CURP</label>
 						<input type="text" name="curp_usuario" id="curp_usuario" class="form-control" placeholder="CURP">
 					</div>
-					<label for="sesion_contrasenia" class="form-label">Contraseña</label>
+					<div class="text-center mb-3">
+						<button type="button" class="btn btn-primary" onclick="registrar_usuario()">Registrar</button>
+					</div>
+				</form> -->
+
+
+
+				<form class="was-validated">
 					<div class="input-group mb-3">
-						<!-- <span class="input-group-text">Contraseña</span> -->
-						<input type="password" id="sesion_contrasenia" class="form-control" placeholder="Contraseña" aria-label="Contraseña" required aria-describedby="btn_contrasenia">
-						<button class="btn btn-secondary" type="button" id="btn_contrasenia" onclick="ver_contrasenia()">
-							<i class="bi bi-eye-slash" id="ver_contrasenia_icon"></i>
-						</button>
+						<span class="input-group-text">Curp</span>
+						<input id="curp_registro" type="text" aria-label="curp" class="form-control text-uppercase" placeholder="CURP" required>
+					</div>
+					<div class="input-group mb-3">
+						<span class="input-group-text">Nombre de usuario</span>
+						<input id="usuario_registro" type="text" aria-label="curp" class="form-control" placeholder="Nombre (s)" required>
+					</div>
+					<div class="mb-3">
+						<label for="grado_grupo_registro" class="form-label">Grado y Grupo</label>
+						<select id="grado_grupo_registro" class="form-select">
+							<option selected>Elige una opción</option>
+							<option value="1A">1A</option>
+							<option value="1B">1B</option>
+							<option value="1C">1C</option>
+							<option value="1D">1D</option>
+							<option value="2A">2A</option>
+							<option value="2B">2B</option>
+							<option value="2C">2C</option>
+							<option value="2D">2D</option>
+							<option value="3A">3A</option>
+							<option value="3B">3B</option>
+							<option value="3C">3C</option>
+							<option value="4A">4A</option>
+							<option value="4B">4B</option>
+							<option value="4C">4C</option>
+							<option value="5A">5A</option>
+							<option value="5B">5B</option>
+							<option value="5C">5C</option>
+							<option value="6A">6A</option>
+							<option value="6B">6B</option>
+							<option value="6C">6C</option>
+							<option value="Administrador">Administrador</option>
+						</select>
+					</div>
+
+					<div class="text-center">
+						<button id="btn-registrar_usuario" onclick="registrar_usuario()" type="button" class="btn btn-success">Guardar registro</button>
+						<button class="btn btn-secondary" type="reset" onclick="window.location.reload()">Reiniciar</button>
 					</div>
 				</form>
+
+
 			</div>
 			<div class="col text-center">
 				<h6>Usuarios de la Biblioteca</h6>
@@ -106,7 +148,7 @@ if ($total_usuarios > 0) {
 							<th>Nombre usuario</th>
 							<th>CURP</th>
 							<th>Clase</th>
-							<th>.:.</th>
+							<th>Acción</th>
 						</tr>
 					</thead>
 					<tbody id="usuarios">
@@ -131,9 +173,8 @@ if ($total_usuarios > 0) {
 								echo "<td>{$usuario['CurpUsuario']}</td>";
 								echo "<td>{$usuario['GradoGrupo']}</td>";
 								echo "<td>
-								<button class='btn btn-outline-info'><i class='bi bi-pencil-square'></i></button>
-								<button class='btn btn-outline-danger'><i class='bi bi-trash'></i></button>
-
+								<button class='btn btn-outline-info' onclick='editar_usuario({$usuario['IdUsuario']})'><i class='bi bi-pencil-square'></i></button>
+								<button class='btn btn-outline-danger' onclick='eliminar_usuario({$usuario['IdUsuario']})'><i class='bi bi-trash'></i></button>
 								</td>";
 								echo "</tr>";
 							}
